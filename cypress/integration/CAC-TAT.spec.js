@@ -1,5 +1,7 @@
 /// <reference types="Cypress" />
 
+
+
 ///const { functions } = require("cypress/types/lodash") Verificar com o marcelo
 
 describe('Central de Atendimento ao Cliente TAT', function() {
@@ -19,8 +21,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     cy.get('#lastName').type('Viana Alves')
     cy.get('#email').type('igor.viana1@live.com')
     cy.get('#open-text-area').type(longText, {delay: 0 })
-    cy.get('button[type="submit"]').click()
-
+    cy.contains('button', 'Enviar').click()
     cy.get('.success').should('be.visible')
   })
 
@@ -30,7 +31,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.get('#lastName').type('Viana Alves')
         cy.get('#email').type('igor.viana1.live.com')
         cy.get('#open-text-area').type('Teste')
-        cy.get('button[type="submit"]').click()
+        cy.contains('button', 'Enviar').click()
         cy.get('.error').should('be.visible')
         })
 
@@ -49,12 +50,12 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.get('#email').type('igor.viana1.live.com')
         cy.get('#phone-checkbox').check()
         cy.get('#open-text-area').type('Teste')
-        cy.get('button[type="submit"]').click()
+        cy.contains('button', 'Enviar').click()
 
         cy.get('.error').should('be.visible')
     })
 
-    it.only('Prenche e limpa os campos nome, sobrenome, email e telefone', function (){
+    it('Prenche e limpa os campos nome, sobrenome, email e telefone', function (){
 
       cy.get('#firstName')
         .type('Igor Steffano')
@@ -76,6 +77,20 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         .should('have.value','27999814320')
         .clear()
         .should('have.value', '')
+    })
+
+    it('Exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', function () {
+      cy.contains('button', 'Enviar').click()
+      cy.get('.error').should('be.visible')
+    })
+
+    it('envia formulário com sucesso usando um comando customizado', () => {
+      cy.fillMandatoryFieldsAndSubmit()
+      cy.get('.success').should('be.visible')
+    })
+
+    it('Encontrar texto em mensagem' , function(){
+
     })
 
     it('seleciona um produto (YouTube) por seu texto', function(){
