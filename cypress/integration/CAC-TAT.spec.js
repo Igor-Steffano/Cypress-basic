@@ -5,6 +5,8 @@
 ///const { functions } = require("cypress/types/lodash") Verificar com o marcelo
 
 describe('Central de Atendimento ao Cliente TAT', function() {
+    const THREE_SECONDS_IN_MS = 3000
+  
     beforeEach(() => {
         cy.visit('./src/index.html')
       })
@@ -17,22 +19,33 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     it('preenche os campos obrigatórios e envia o formulario', function() {
     const longText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam commodo lorem vel elit cursus faucibus. Ut a justo id enim malesuada fermentum id non libero. Mauris elementum bibendum sem sit amet tristique. In sit amet lacinia nibh. Curabitur nec euismod dui, venenatis tristique est. Phasellus eget posuere erat.'
 
+    cy.clock()
+
     cy.get('#firstName').type('Igor Steffano')
     cy.get('#lastName').type('Viana Alves')
     cy.get('#email').type('igor.viana1@live.com')
     cy.get('#open-text-area').type(longText, {delay: 0 })
     cy.contains('button', 'Enviar').click()
     cy.get('.success').should('be.visible')
+
+    cy.tick(THREE_SECONDS_IN_MS)
+    cy.get('.success').should('not.be.visible')
+
   })
 
   //Exercício extra 2
-    it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function() {
+    it.only('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function() {
+
+        cy.clock()
+
         cy.get('#firstName').type('Igor Steffano')
         cy.get('#lastName').type('Viana Alves')
         cy.get('#email').type('igor.viana1.live.com')
         cy.get('#open-text-area').type('Teste')
         cy.contains('button', 'Enviar').click()
         cy.get('.error').should('be.visible')
+        cy.tick(THREE_SECONDS_IN_MS)
+        cy.get('.error').should('not.be.visible')
         })
 
     //Exercício extra 3
@@ -62,17 +75,17 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         .should('have.value', 'Igor Steffano')
         .clear()
         .should('have.value', '')
-        cy.get('#lastName')
+      cy.get('#lastName')
         .type('Viana Alves')
         .should('have.value', 'Viana Alves')
         .clear()
         .should('have.value', '')
-        cy.get('#email')
+      cy.get('#email')
         .type('igor.viana1@live.com')
         .should('have.value', 'igor.viana1@live.com')
         .clear()
         .should('have.value', '')
-        cy.get('#phone')
+      cy.get('#phone')
         .type('27999814320') //tentar colocar o delay 0
         .should('have.value','27999814320')
         .clear()
@@ -160,4 +173,22 @@ describe('Central de Atendimento ao Cliente TAT', function() {
             expect($input[0].files[0].name).to.equal('example.json')
       })
     })
+
+    it('exibe e esconde as mensagens de sucesso e erro usando o .invoke', () => {
+      cy.get('.success')
+        .should('not.be.visible')
+        .invoke('show')
+        .should('be.visible')
+        .and('contain', 'Mensagem enviada com sucesso.')
+        .invoke('hide')
+        .should('not.be.visible')
+      cy.get('.error')
+        .should('not.be.visible')
+        .invoke('show')
+        .should('be.visible')
+        .and('contain', 'Valide os campos obrigatórios!')
+        .invoke('hide')
+        .should('not.be.visible')
+    })
+    
 })
