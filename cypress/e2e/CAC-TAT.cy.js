@@ -34,7 +34,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
   })
 
   //Exercício extra 2
-    it.only('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function() {
+    it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function() {
 
         cy.clock()
 
@@ -191,4 +191,30 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         .should('not.be.visible')
     })
     
+    it('preenche a area de texto usando o comando invoke', ()=> {
+      const longText = Cypress._.repeat('0123456789', 20)
+
+      cy.get('#open-text-area')
+        .invoke('val', longText)
+        .should('have.value', longText)
+    })
+
+    it('faz requisição HTTP', ()=> {
+      cy.request('https://cac-tat.s3.eu-central-1.amazonaws.com/index.html')
+        .should(function(response){
+          const {status, statusText, body} = response
+          expect(status).to.equal(200)
+          expect(statusText).to.equal('OK')
+          expect(body).to.include('CAC TAT')
+        })
+    })
+    it.only('encontra o gato escondido', function(){
+      cy.get('#cat')
+        .invoke('show')
+        .should('be.visible')
+      cy.get('#title')
+        .invoke('text', 'CAT TAT')
+      cy.get('#subtitle')
+        .invoke('text', 'Eu consegui finalizar um curso!')
+    })
 })
