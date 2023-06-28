@@ -4,6 +4,7 @@
 
 describe('Central de Atendimento ao Cliente TAT', function() {
     const THREE_SECONDS_IN_MS = 3000
+    //cavati te amo
   
     beforeEach(() => {
         cy.visit('./src/index.html')
@@ -214,5 +215,9 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         .invoke('text', 'CAT TAT')
       cy.get('#subtitle')
         .invoke('text', 'Eu consegui finalizar um curso!')
+    })
+
+    it('Veriicar Login' , function(){
+      cy.get('#code').type('')
     })
 })
